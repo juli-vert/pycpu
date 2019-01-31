@@ -7,7 +7,7 @@ Requirements:
 
 Usage: 
 -
-- docker pull python:3.6.4-slim-jessie
+- docker pull python:3.7-alpine
 - docker build -t pycpuinfo .
 - docker run -p 8080:8080 pycpuinfo &
 - curl http://localhost:8080 | jq

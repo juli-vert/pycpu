@@ -3,13 +3,13 @@ import json
 def getcpuinfo():
     cores = {}
     core = {}
-    globals = {'total':0, 'real':0, 'cores':0}
+    total = 0
     cpus = {}
     tmpcore = "Not value"
     with open('/proc/cpuinfo', 'r') as f:
         for line in f.read().split('\n'):
             if 'processor' in line:
-                globals['cores'] = globals['total'] = globals['total']+1
+                total += 1
                 if len(core):
                     cores.update({tmpcore:core})
                     core = {}
@@ -24,12 +24,14 @@ def getcpuinfo():
                         cpus[v] = cpus[v]+1
                     else:
                         cpus.update({v:1})
-                        globals['real'] = globals['real']+1
                 elif 'flags' in k:
                     v = v.split(' ')
                 core.update({k.strip('\t'):v})
     cores.update({tmpcore:core})
-    return '{0}\n{1}'.format(json.dumps(cores),json.dumps(globals))
-
-'''if __name__== "__main__":
-        print(getcoreinfo())'''
+    cores.update({'totals':total})
+    cores.update({'real':len(cpus)})
+    cors = 0
+    for it in cpus:
+        cors += cpus[it]
+    cores.update({'cores':cors})
+    return json.dumps(cores)
